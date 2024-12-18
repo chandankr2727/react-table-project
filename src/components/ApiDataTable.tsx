@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { DataTable, DataTablePageEvent, DataTableSelectionEvent } from 'primereact/datatable';
+import { DataTable, DataTablePageEvent, DataTableSelectionMultipleChangeEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { InputNumber } from 'primereact/inputnumber';
@@ -99,13 +99,15 @@ const ApiDataTable: React.FC = () => {
     setLoading(false);
   };
 
-  const handleSelectionChange = (event: DataTableSelectionEvent<FetchedData[]>) => {
+  const handleSelectionChange = (event: DataTableSelectionMultipleChangeEvent<FetchedData[]>) => {
     const newSelectedIds = new Set(selectedDataIds);
     
+    event.value.forEach((selected: FetchedData) => {
+      newSelectedIds.add(selected.id);
+    });
+
     data.forEach(row => {
-      if (event.value.some(selected => selected.id === row.id)) {
-        newSelectedIds.add(row.id);
-      } else {
+      if (!event.value.some((selected: FetchedData) => selected.id === row.id)) {
         newSelectedIds.delete(row.id);
       }
     });
@@ -126,7 +128,7 @@ const ApiDataTable: React.FC = () => {
             <InputNumber
               inputId="select-count-input"
               value={selectCount}
-              onValueChange={(e) => setSelectCount(e.value)}
+              onValueChange={(e) => setSelectCount(e.value ?? null)}
               placeholder="Enter number of rows"
               min={1}
             />
@@ -180,4 +182,3 @@ const ApiDataTable: React.FC = () => {
 };
 
 export default ApiDataTable;
-

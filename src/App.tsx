@@ -1,4 +1,3 @@
-import React from 'react';
 import ApiDataTable from './components/ApiDataTable';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
